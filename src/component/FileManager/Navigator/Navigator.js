@@ -120,6 +120,15 @@ const sortOptions = [
     "文件大小倒序"
 ];
 
+const optionsTable = {
+    0: "namePos",
+    1: "nameRev",
+    2: "timePos",
+    3: "timeRev",
+    4: "sizePos",
+    5: "sizeRes"
+};
+
 const styles = theme => ({
     container: {
         [theme.breakpoints.down("xs")]: {
@@ -171,7 +180,7 @@ class NavigatorComponent extends Component {
         hiddenMode: false,
         anchorHidden: null,
         anchorSort: null,
-        selectedIndex: 0
+        selectedIndex: Auth.GetPreference("sort_method_index") || 0
     };
 
     constructor(props) {
@@ -219,6 +228,10 @@ class NavigatorComponent extends Component {
             .then(response => {
                 this.currentID = response.data.parent;
                 this.props.updateFileList(response.data.objects);
+
+                const sortMethodIndex = Auth.GetPreference("sort_method_index") || 0;
+                this.props.changeSort(optionsTable[sortMethodIndex]);
+
                 this.props.setNavigatorLoadingStatus(false);
                 const pathTemp = (path !== null
                     ? path.substr(1).split("/")
@@ -370,14 +383,8 @@ class NavigatorComponent extends Component {
 
     handleMenuItemClick = (e, index) => {
         this.setState({ selectedIndex: index, anchorEl: null });
-        const optionsTable = {
-            0: "namePos",
-            1: "nameRev",
-            2: "timePos",
-            3: "timeRev",
-            4: "sizePos",
-            5: "sizeRes"
-        };
+        
+        Auth.SetPreference("sort_method_index", index);
         this.props.changeSort(optionsTable[index]);
         this.handleClose();
     };
