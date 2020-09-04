@@ -85,7 +85,7 @@ class PathSelectorCompoment extends Component {
                 return (x.type === "dir" && (this.props.selected.findIndex((value)=>{
                     return (value.name === x.name )&&(value.path === x.path);
                 }))===-1);
-            });
+            }).sort((x, y) => x.name.localeCompare(y.name));
             if(toBeLoad ==="/"){
                 dirList.unshift({name:"/",path:""})
             }
